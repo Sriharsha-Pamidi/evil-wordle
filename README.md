@@ -1,6 +1,6 @@
 # evil-wordle
 UCSD CSE 230 Final Project -- Creating the evil-wordle game in Haskell using Brick library.
-** Evil wordle game is a word guessing game with a twist. Everytime you try guessing a word, we change the right answer **
+**Evil wordle game is a word guessing game with a twist. Everytime you try guessing a word, we change the right answer**
 
 ## Members
 - Harshith Nagubandi
