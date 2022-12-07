@@ -152,4 +152,37 @@ spec = do
         test ["abc", "abd", "adc", "def"] "ab&" ["abc", "abd"]
         test ["abc", "abd", "adc", "def"] "a&c" ["abc", "adc"]
         test ["abc", "abd", "adc", "def"] "a&f" []
+        
+
+-- main = hspec $ do
+--   describe "checkPos" $ do
+--     it "returns a list of positions where the character is a &" $ do
+--       checkPos "a&b&c" `shouldBe` [1, 3]
+--       checkPos "a&b&c&" `shouldBe` [1, 3]
+--       checkPos "&a&b&c" `shouldBe` [0, 2, 4]
+--   describe "checkNotPos" $ do
+--     it "returns a list of positions where the character is not a &" $ do
+--       checkNotPos "a&b&c" `shouldBe` [0, 2, 4]
+--       checkNotPos "a&b&c&" `shouldBe` [0, 2, 4]
+--       checkNotPos "&a&b&c" `shouldBe` [1, 3]
+--   describe "matchAtPos" $ do
+--     it "returns a list of strings for which the character at given position matches with
+--     given input list of strings" $ do
+--       matchAtPos ["abc", "bcd", "cde"] 'a' 0 `shouldBe` ["abc"]
+--       matchAtPos ["abc", "bcd", "cde"] 'b' 0 `shouldBe` ["bcd"]
+--       matchAtPos ["abc", "bcd", "cde"] 'c' 0 `shouldBe` ["cde"]
+--       matchAtPos ["abc", "bcd", "cde"] 'a' 1 `shouldBe` []
+--       matchAtPos ["abc", "bcd", "cde"] 'b' 1 `shouldBe` ["abc"]
+--       matchAtPos ["abc", "bcd", "cde"] 'c' 1 `shouldBe` ["bcd"]
+--    describe "zeroMatch" $ do
+--     it "returns true if the list of tuples is all false" $ do
+--       zeroMatch [('a', 'b'), ('b', 'c'), ('c', 'd')] `shouldBe` True
+--       zeroMatch [('a', 'a'), ('b', 'c'), ('c', 'd')] `shouldBe` False
+--       zeroMatch [('a', 'b'), ('b', 'b'), ('c', 'd')] `shouldBe` False
+--       zeroMatch [('a', 'b'), ('b', 'c'), ('c', 'c')] `shouldBe` False
+--    describe "zeroMatchList" $ do
+--     it "returns a list of strings for which the character at given position matches with
+--     given input list of strings" $ do
+--       zeroMatchList ["light", "fight", "night", "sight"] "right" [0] `shouldBe` ["light", "fight", "night", "sight"]
+--       zeroMatchList ["light", "fight", "night", "sight"] "light" [0] `shouldBe` ["fight", "night", "sight"]
       
