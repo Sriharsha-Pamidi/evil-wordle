@@ -188,7 +188,8 @@ handleEvent s e = case sGameStatus s of
                       { sGameStatus = Loss,
                         sStatus = printf "Wrong guess, the word was \"%s\"" randHead
                       }
-                  (_, False) -> s' {sStatus = printf "Updating possible word list %d sanList %d %s %s %s sanity %s" (length newList) (length sanList) dispString dispHead dispW san,
+                  (_, False) -> s' {sStatus = printf "Updating possible word list",
+                                -- sStatus = printf "Updating possible word list %d sanList %d %s %s %s sanity %s" (length newList) (length sanList) dispString dispHead dispW san,
                                     sPossible = newList,
                                     sWord = newWord}
               where
