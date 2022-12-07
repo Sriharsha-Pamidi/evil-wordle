@@ -22,17 +22,21 @@ data GameStatus = Win | Loss | Ongoing
 data GameMode = Daily | Infinite
   deriving (Show, Read, Eq, Ord)
 
+--Function to read the lines in the file 
 readWords :: FilePath -> IO [String]
 readWords p = lines <$> readFile p
 
+-- Pick a word
 pickWord :: [String] -> IO String
 pickWord = pickWordFilter $ const True
 
+-- pick a word from the list of strings based on the filter
 pickWordFilter :: (String -> Bool) -> [String] -> IO String
 pickWordFilter f ws = do
   let fws = filter f ws
   n <- randomRIO (0, length fws - 1)
   return $ fws !! n
+
 
 pickDailyWord :: Day -> [String] -> IO String
 pickDailyWord day dict = do
@@ -76,12 +80,15 @@ removeWords (x:xs) word threshold = f x word threshold ++ removeWords xs word th
             | scoreCompare w guess > thresh = []
             | otherwise = [w]
 
+-- generate score based on comparison 
 scoreList :: [String] -> String -> [Int]
 scoreList wordlist gword = map (scoreCompare gword) wordlist
 
+-- threshold will be the minimum score in the list of scores 
 getThreshold :: [String] -> String -> Int
 getThreshold wordlist gword = minimum (scoreList wordlist gword)
 
+-- compare the words to get the score 
 scoreCompare :: String -> String -> Int
 scoreCompare gWord tWord = guessScore1 (guessScore gWord tWord)
 --   where
@@ -120,32 +127,41 @@ guessScore gWord tWord = foldl f [] $ zip gWord tWord
         correctTotal c = length . filter (\(a, b) -> a == c && b == c) $ zip gWord tWord
 
 
+-- match at particular position 
 matchAtPos :: [String] -> Char -> Int -> [String]
 matchAtPos [] c p = []
 matchAtPos (x:xs) c p
                     | (x !! p) == c = x:matchAtPos xs c p
                     | otherwise = matchAtPos xs c p
 
+-- match at any position
 matchAtAnyPos :: [String] -> Char -> Int -> [String]
 matchAtAnyPos wordlist c 0 = []
 matchAtAnyPos wordlist c n = matchAtPos wordlist c (n-1) ++ matchAtAnyPos wordlist c (n-1)
 
+-- no matches 
 zeroMatch :: [(Char, Char)] -> Bool
 zeroMatch [] = True
 zeroMatch (x:xs) = uncurry (/=) x  && zeroMatch xs
 
+
+-- remove a particular element from the list 
 removeElement :: [String] -> String -> [String]
 removeElement [] w1 = []
 removeElement (x:xs) w1 = if x == w1 then l1 else x:l1
   where
     l1 = removeElement xs w1
 
+-- to perform the operation list1-list2 
 removeElements :: [String] -> [String] -> [String]
 removeElements = foldl removeElement
 
+-- get the list with no elements matching 
 getNonMatchingList :: [String] -> [(Int, [String])] -> [String]
 getNonMatchingList = foldl
       (\ wordlist x -> removeElements wordlist (snd x))
+
+
 
 zeroMatchList :: [String] -> String -> [Int] -> [String]
 zeroMatchList [] s pList = []
@@ -161,6 +177,7 @@ checkPos s1 = [x | x <- [0..(length s1 -1)], s1 !! x == '&']
 checkNotPos :: String -> [Int]
 checkNotPos s1 = [x | x <- [0..(length s1 -1)], s1 !! x /= '&']
 
+-- position and the corresponding match list 
 getPosLists :: [String] -> String -> String -> Bool -> [(Int, [String])]
 getPosLists wordList refWord dispWord withNonMatching = if withNonMatching then list1 ++ list2 else list1
   where
@@ -173,6 +190,7 @@ getPosLists2 wordList refWord dispWord withNonMatching = if withNonMatching then
     list1 = [(p, matchAtAnyPos wordList (refWord !! p) (length refWord)) | p <- checkPos dispWord] -- matching at some position
     list2 = [(length refWord, getNonMatchingList wordList list1)] -- non matching words
 
+-- position with max number of possibilities 
 getMaxPos :: [(Int, [String])] -> (Int, [String])
 getMaxPos posLists = posLists !! n
   where
@@ -184,6 +202,7 @@ getMaxPos posLists = posLists !! n
 getPosWord :: String -> String -> [(Int, Char)]
 getPosWord refWord randWord = [(x, refWord !! x) | x <- [0..(length refWord -1)], refWord !! x == randWord !! x]
 
+-- update the match string 
 updateDispWord1 :: String -> [(Int, Char)] -> String
 updateDispWord1 dispWord [] = dispWord
 updateDispWord1 dispWord (x:xs) = updateDispWord1 (l1 ++ [snd x] ++ l2) xs
