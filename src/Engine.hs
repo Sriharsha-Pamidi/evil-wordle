@@ -276,8 +276,8 @@ generateEvil n m s = take a emptyList ++ [s] ++ drop (a+1) emptyList
   where
     emptyList = generateEmpty m
     a = n `mod` m
-    
-    
+
+
 -- function which generates random number
 getRandom :: Int -> IO Int
 getRandom n = getStdRandom (randomR (0, n))
@@ -287,3 +287,8 @@ selectRandomWord :: [String] -> String
 selectRandomWord wordlist = wordlist !! n
   where
     n = unsafePerformIO (getRandom (length wordlist -1))
+
+
+isElementOf :: String -> [String] -> Bool
+isElementOf s1 [] = False
+isElementOf s1 (x:xs) = (x == s1) || isElementOf s1 xs

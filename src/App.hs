@@ -44,7 +44,8 @@ data State = State
     sResults :: [String],
     sUnicode :: Bool,
     sWordIx :: String,
-    sEvilPos :: Int
+    sEvilPos :: Int,
+    sGuessWords :: [String]
   }
   deriving (Show, Read, Eq, Ord)
 
@@ -69,7 +70,8 @@ initState = do
         sResults = [],
         sUnicode = unicode ss,
         sWordIx = showIx,
-        sEvilPos = 0
+        sEvilPos = 0,
+        sGuessWords = []
       }
 
 appMain :: IO State
@@ -175,6 +177,7 @@ handleEvent s e = case sGameStatus s of
         let ns
               | length g /= length w = s {sStatus = printf "Word size must be %d" $ length w}
               | not $ isCorrectWord g ws = s {sStatus = printf "\"%s\" is not a valid word" g}
+              | isElementOf g gList = s {sStatus = printf "Repeated guess word \"%s\" " g}
               | otherwise =
                 case (g == newWord, length (sGuesses s') == sMaxGuesses s') of
                   (True, _) ->
@@ -191,7 +194,9 @@ handleEvent s e = case sGameStatus s of
                   (_, False) -> s' {sStatus = printf "Updating possible word list",
                                 -- sStatus = printf "Updating possible word list %d sanList %d %s %s %s sanity %s" (length newList) (length sanList) dispString dispHead dispW san,
                                     sPossible = newList,
-                                    sWord = newWord}
+                                    sWord = newWord,
+                                    sGuessWords = sGuessWords s' ++ [g]
+                                    }
               where
                 s' = s {sGuesses = sGuesses s ++ [guess g newWord], sInput = ""}
                 showResult _s = intercalate "\n" (t : "" : grid)
@@ -231,6 +236,7 @@ handleEvent s e = case sGameStatus s of
     g = sInput s
     w = sWord s
     ws = sWords s
+    gList = sGuessWords s
     attempt = guess g w
     randWord = head (sPossible s)
     --filePath = "resource/dict/dump_" ++ show (length (sGuesses s')) ++ ".txt"
